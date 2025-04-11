@@ -22,7 +22,7 @@ router.post("/generate_link_token", async (req, res, next) => {
       products: ["transactions"],
       client_name: "Where'd My Money Go?",
       language: "en",
-      country_codes: ["US"],
+      country_codes: ["DE", "ES", "FR", "GB", "IE", "IT", "NL", "PT", "US"],
       webhook: WEBHOOK_URL,
     });
     res.json(tokenResponse.data);
