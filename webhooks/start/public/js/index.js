@@ -62,17 +62,18 @@ function displaySimplifiedData(simplifiedData) {
 
 const fireTestWebhook = async function () {
   // TODO: FIll this out
+    await callMyServer("/server/fire_test_webhook", true);
 };
 
 const updateWebhook = async function () {
-  // const newWebhookUrl = document.querySelector("#webhookInput").value;
-  // if (!newWebhookUrl.startsWith("https://")) {
-  //   alert("How about a real URL here?");
-  //   return false;
-  // }
-  // await callMyServer("/server/update_webhook", true, {
-  //   newUrl: newWebhookUrl,
-  // });
+  const newWebhookUrl = document.querySelector("#webhookInput").value;
+  if (!newWebhookUrl.startsWith("https://")) {
+    alert("How about a real URL here?");
+    return false;
+  }
+  await callMyServer("/server/update_webhook", true, {
+    newUrl: newWebhookUrl,
+  });
 };
 
 const callMyServer = async function (

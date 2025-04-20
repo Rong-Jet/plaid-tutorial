@@ -19,7 +19,7 @@ const FIELD_ACCESS_TOKEN = "accessToken";
 const FIELD_USER_STATUS = "userStatus";
 
 let webhookUrl =
-  process.env.WEBHOOK_URL || "https://www.example.com/server/plaid_webhook";
+  process.env.WEBHOOK_URL || "https://webhook.site/1d2459ea-4461-4c07-9b91-d99cbe0f95d3";
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -38,6 +38,7 @@ const plaidConfig = new Configuration({
       "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
       "PLAID-SECRET": process.env.PLAID_SECRET,
       "Plaid-Version": "2020-09-14",
+      "PLAID-REGION": "DE",
     },
   },
 });
@@ -210,7 +211,13 @@ app.get("/server/create_asset_report", async (req, res, next) => {
  */
 app.post("/server/fire_test_webhook", async (req, res, next) => {
   try {
-    res.json({ todo: "Implement this feature" });
+    const fireWebhookResponse = await plaidClient.sandboxItemFireWebhook({
+      access_token: userRecord[FIELD_ACCESS_TOKEN],
+      webhook_type: WebhookType.Item,
+      webhook_code: 
+        SandboxItemFireWebhookRequestWebhookCodeEnum.NewAccountsAvailable,
+    });
+    res.json(fireWebhookResponse.data);
   } catch (error) {
     next(error);
   }
@@ -221,7 +228,13 @@ app.post("/server/fire_test_webhook", async (req, res, next) => {
  */
 app.post("/server/update_webhook", async (req, res, next) => {
   try {
-    res.json({ todo: "Implement this feature" });
+    webhookUrl = req.body.newUrl;
+    const accessToken = userRecord[FIELD_ACCESS_TOKEN];
+    const updateResponse = await plaidClient.itemWebhookUpdate({
+      access_token: accessToken,
+      webhook: webhookUrl,
+    });
+    res.json(updateResponse.data);
   } catch (error) {
     next(error);
   }
@@ -232,7 +245,9 @@ app.post("/server/update_webhook", async (req, res, next) => {
  */
 app.post("/server/receive_webhook", async (req, res, next) => {
   try {
-    res.json({ todo: "Implement this feature" });
+    console.log("This is what I received:");
+    console.dir(req.body, { colors: true, depth: null });
+    res.json({ status: "received" });
   } catch (error) {
     next(error);
   }
